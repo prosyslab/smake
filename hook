@@ -321,7 +321,7 @@ _cc() {
             -d*|-dump*|-p|-g*|-pg|-print-*|-Q|-save-temps|-time) opt cc ;;
 
             # Optimization
-            -O*) ;; # Ignore optimization
+            -O*) opt -O cc ;;
             --param*) opt --param cc ;;
 
             # Target
