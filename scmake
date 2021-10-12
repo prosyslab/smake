@@ -112,9 +112,10 @@ def scmake(out_dir_p: Path):
     '''
     for entry in compilation_db:
         file_p = Path(entry['file'])   # translation unit
+        preprocessed_p = file_p.parent / (file_p.name+".i")  # preprocessed
         out_name = file_p.stem + ".i"
         out_p = out_dir_p / \
-            file_p.relative_to(cwd).parent / out_name   # output path
+            file_p.relative_to(cwd).parent / out_name   # output
         print(f"{file_p} -> {out_p}")
 
         # generate preprocessing command from the compiling command
@@ -126,8 +127,7 @@ def scmake(out_dir_p: Path):
 
         # move preprocessed file into the output directory
         out_p.parent.mkdir(parents=True, exist_ok=True)
-        (file_p.parent /
-         (file_p.name+".i")).rename(out_p)
+        preprocessed_p.rename(out_p)
 
 
 if __name__ == "__main__":
