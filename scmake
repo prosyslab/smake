@@ -122,8 +122,8 @@ def scmake(out_dir_p: Path):
         cmd = replace(file_p, entry['command'])
 
         # preprocess
-        subprocess.Popen(
-            cmd, cwd=entry['directory'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+        subprocess.run(
+            cmd, cwd=entry['directory'], stdout=subprocess.PIPE, stderr=subprocess.STDOUT, check=True)
 
         # move preprocessed file into the output directory
         out_p.parent.mkdir(parents=True, exist_ok=True)
