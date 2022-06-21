@@ -83,7 +83,7 @@ def cmake(out_dir_p: Path):
 
     # enable "CMAKE_EXPORT_COMPILE_COMMANDS" to generate "compile_commands.json"
     subprocess.run(
-        "cmake -j -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..".split(), cwd=out_dir_p, check=True)
+        "cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 ..".split(), cwd=out_dir_p, check=True)
     return True
 
 
