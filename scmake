@@ -87,7 +87,7 @@ def cmake(out_dir_p: Path):
     return True
 
 
-def scmake(out_dir_p: Path):
+def scmake(out_dir_p: Path, cmake_out_p: Path):
     ''' Create preprocessed files and move them into the output directory
 
     Args:
@@ -97,9 +97,14 @@ def scmake(out_dir_p: Path):
     '''
 
     cwd = Path().cwd()
-
-    with open("./compile_commands.json", "r") as f:
-        compilation_db = json.load(f)
+    compile_command_path = Path("./compile_commands.json")
+    if Path.is_file(compile_command_path):
+        with open(str(compile_command_path), "r") as f:
+            compilation_db = json.load(f)
+    else:
+        compile_command_path = cmake_out_p / "compile_commands.json"
+        with open(str(compile_command_path), "r") as f:
+            compilation_db = json.load(f)
 
     # create output directory
     if not mkdir_safe(out_dir_p):
@@ -134,8 +139,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--cmake", action="store_true",
                         default=False, help="cmake under CMAKE_OUT")
-    parser.add_argument("--cmake-out", default="build",
-                        help="set cmake directory (default: build)")
+    parser.add_argument("--cmake-out", default="tmp_out",
+                        help="set cmake directory (default: tmp_out)")
     parser.add_argument("--out", const="sparrow", default="sparrow",
                         nargs="?", help="initialize output directory (default: sparrow)")
 
@@ -147,4 +152,4 @@ if __name__ == "__main__":
     if args.cmake:  # only cmake
         sys.exit(-1)
 
-    scmake(scmake_out_p)
+    scmake(scmake_out_p, cmake_out_p)
