@@ -2,12 +2,14 @@
 # smake -- generates analysis rules from make rules
 # Author: Jaeho Shin <netj@ropas.snu.ac.kr>
 # Created: 2006-01-11
-AnalyzerId=sparrow
 Revision=r1045
 CCHooks=(gcc g++ cc c++ clang clang++ cpp as ld ar wllvm gclang)
 Hooks=(rm mv cp ln)
 
-SMAKEDIRpath=$AnalyzerId
+if [ -z "$SMAKEDIRpath" ]; then
+  SMAKEDIRpath=sparrow
+fi
+
 which realpath >/dev/null
 if [[ $? == 1 ]]; then
   realpath="readlink -f"
@@ -71,6 +73,7 @@ EOF
       shift
       if [ -n "$SMAKEDIR" ]; then
         # if SMAKEDIR is specified
+        SMAKEDIR=$(realpath "$SMAKEDIR")
         dir=$SMAKEDIR
       else
         # otherwise, use default
@@ -94,8 +97,8 @@ EOF
 # Generated at $(now)
 #           by smake($Revision) --init $@.
 
-ANALYZE?=$(dirname "$AnalyzerPath")/$AnalyzerId
-TGTS=\$(shell cat .targets | sed -e 's/\$\$/.$AnalyzerId/')
+ANALYZE?=$(dirname "$AnalyzerPath")/$SMAKEDIRpath
+TGTS=\$(shell cat .targets | sed -e 's/\$\$/.$SMAKEDIRpath/')
 
 ifneq (\$(origin STEST),undefined)
 export OPTS=-uidebug
@@ -108,7 +111,7 @@ banner:
 	@\$(ANALYZE) | sed -ne '1,/^\$\$/p'
 
 \$(TGTS):
-	\$(ANALYZE) \$(SPARROW_OPTS) \$(OPTS) -report=\$@ \$(@:%.$AnalyzerId=%)/* \$(REDIRECTION)
+	\$(ANALYZE) \$(SPARROW_OPTS) \$(OPTS) -report=\$@ \$(@:%.$SMAKEDIRpath=%)/* \$(REDIRECTION)
 
 targets:
 	@echo "Following <target>s are ready to be analyzed:"
