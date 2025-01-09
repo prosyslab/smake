@@ -8,6 +8,9 @@ Hooks=(rm mv cp ln)
 
 if [ -z "$SMAKEDIRpath" ]; then
   SMAKEDIRpath=sparrow
+elif [[ "$SMAKEDIRpath" =~ ^/ ]]; then
+  # SMAKEDIRpath should be a relative path
+  SMAKEDIRpath=$(realpath -s --relative-to="$PWD" "$SMAKEDIRpath")
 fi
 
 which realpath >/dev/null
